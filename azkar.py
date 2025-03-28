@@ -10,8 +10,8 @@ POST_TIME = 14400 # Post timing , in seconds
 db = redis.Redis(decode_responses=True)
 app = Client(
     "azkar-bot",
-    api_id=13251350,
-    api_hash="66c0eacb36f9979ae6d153f207565cd6",
+    api_id=API_ID_HERE, # use ur api id here
+    api_hash="HASH_HERE", # use ur api hash here
     bot_token=TOKEN,
     in_memory=True
 )
