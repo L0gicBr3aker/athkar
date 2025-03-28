@@ -3,7 +3,7 @@
 ## Step By Step / The bot tested on ubuntu :)
 
 1. Change the credentials to your own credentials "UserID & BOT TOKEN" .
-2. Install the requirements. `python -m pip install pyrogram tgcrypto pyromod redis`
+2. Install the requirements. `python3 -m pip install pyrogram tgcrypto pyromod redis`
 3. Run the redis services `service redis start` .
 4. Start the bot on screen `screen python3 azkarbot.py`
 
