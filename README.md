@@ -5,7 +5,7 @@
 1. Change the credentials to your own credentials "UserID & BOT TOKEN" .
 2. Install the requirements. `python3 -m pip install pyrogram tgcrypto pyromod redis`
 3. Run the redis services `service redis start` .
-4. Start the bot on screen `screen python3 azkarbot.py`
+4. Start the bot on screen `screen python3 azkar.py`
 
 ## Features
 1. You can use an telegram channel to get the data from it for example MP3 File or PDF or whatever
