@@ -1,15 +1,18 @@
 from pyrogram import Client, filters, idle, types, errors, enums
 from pyromod import listen
-
+from datetime import datetime
+from pytz import timezone
 import asyncio, re, random, json, os
 import redis.asyncio as redis
 
+
+TIME_ZONE = "Asia/Riyadh"
 TOKEN = "TOKEN_HERE"
 SUDO_ID = 827315 # Use your telegram id
-POST_TIME = 14400 # Post timing , in seconds
+POST_TIME = 14400 # Post timing , in seconds (the default post time is 4hrs)
 db = redis.Redis(decode_responses=True)
 app = Client(
-    "azkar-bot",
+    "azkar",
     api_id=API_ID_HERE, # use ur api id here
     api_hash="HASH_HERE", # use ur api hash here
     bot_token=TOKEN,
@@ -139,7 +142,7 @@ async def onPrivate(c: Client,m: types.Message):
     
     if text and text == "/stop":
         await db.srem(bot_id+"broad", m.from_user.id)
-        return await m.reply("↢ تم الغاء اشتراكك بالبوت , لن تتلقى اي اشعار من البوت")
+        return await m.reply("↢ تم الغاء اشتراكك بالبوت , لن تتلقلى اي اذكار")
     
     if text == "/broad":
         await db.sadd(bot_id+"broad", m.from_user.id)
@@ -492,6 +495,47 @@ async def onGroupChat(c: Client, m: types.Message):
 async def autoPost():
     while not await asyncio.sleep(2.5):
         for broad in await db.smembers(bot_id+"broad"):
+            now_utc = datetime.now(timezone('UTC'))
+            now_ksa = now_utc.astimezone(timezone('Asia/Riyadh'))
+            day = now_ksa.strftime("%A")
+            hour = now_ksa.strftime("%I %p")
+            if (str(day) == "Friday") and not await db.get(bot_id+f"b-{broad}-f"):
+                try:
+                    Surah_Alkahf = "/root/athkar/assets/Alkahf.pdf"
+                    await app.send_document(
+                        int(broad),
+                        document=Surah_Alkahf,
+                        caption="{إِنَّ اللَّهَ وَمَلَـٰٓئِكَتَهُ يُصَلُّونَ عَلَى النَّبِيِّ يَـٰٓأَيُّهَا الَّذِينَ ءامَنُوا صَلُّوا عَلَيْهِ وَسَلِّمُوا تَسْلِيمًا}"
+                    )
+                    await db.set(bot_id+f"b-{broad}-f", 1, ex=86400)
+                except errors.FloodWait as flood:
+                    await asyncio.sleep(flood.value)
+                except Exception:
+                    pass
+            if str(hour) == "07 AM" and not await db.get(bot_id+f"b-{broad}-7"):
+                try:
+                    morning_image = "/root/athkar/assets/morning_image.png"
+                    await app.send_photo(
+                        int(broad),
+                        photo=morning_image,
+                    )
+                    await db.set(bot_id+f"b-{broad}-7", 1, ex=3600)
+                except errors.FloodWait as flood:
+                    await asyncio.sleep(flood.value)
+                except Exception:
+                    pass
+            if str(hour) == "07 PM" and not await db.get(bot_id+f"b-{broad}-7"):
+                try:
+                    evening_image = "/root/athkar/assets/evening_image.png"
+                    await app.send_photo(
+                        int(broad),
+                        photo=evening_image,
+                    )
+                    await db.set(bot_id+f"b-{broad}-7", 1, ex=3600)
+                except errors.FloodWait as flood:
+                    await asyncio.sleep(flood.value)
+                except Exception:
+                    pass
             if not await db.get(bot_id+f"b-{broad}"):
                 await db.set(bot_id+f"b-{broad}", 1, ex=POST_TIME)
                 with open("./azkar.json", "r", encoding="utf-8") as f:
