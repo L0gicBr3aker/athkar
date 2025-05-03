@@ -12,7 +12,7 @@ SUDO_ID = 827315 # Use your telegram id
 POST_TIME = 14400 # Post timing , in seconds (the default post time is 4hrs)
 db = redis.Redis(decode_responses=True)
 app = Client(
-    "azkar",
+    "azkar-bot",
     api_id=API_ID_HERE, # use ur api id here
     api_hash="HASH_HERE", # use ur api hash here
     bot_token=TOKEN,
