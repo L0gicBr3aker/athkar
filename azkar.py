@@ -524,6 +524,24 @@ async def autoPost():
                     await asyncio.sleep(flood.value)
                 except Exception:
                     pass
+            if str(hour) == "12 AM" and not await db.get(bot_id+f"b-{broad}-12"):
+                try:
+                    alwatr = """
+                    من سجدَ وجد، ومن ألحّ على الله أُجيب!
+                    ومن اتقى أُعطي، ومن صبرَ جُبر .. 
+                    ولا يخذلُ ربك أحدًا.
+
+                    أوترو فإن الله يحب الوتر : 🗯️
+                    """
+                    await app.send_message(
+                        int(broad),
+                        text=alwatr,
+                    )
+                    await db.set(bot_id+f"b-{broad}-12", 1, ex=3600)
+                except errors.FloodWait as flood:
+                    await asyncio.sleep(flood.value)
+                except Exception:
+                    pass
             if str(hour) == "07 PM" and not await db.get(bot_id+f"b-{broad}-7"):
                 try:
                     evening_image = "/root/athkar/assets/evening_image.png"
